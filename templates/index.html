@@ -29,22 +29,17 @@
 				<div class="col">
 					<p></p>
 					<h2 class="font-weight-light">myStatus
-                        {% if on %}
+                        {% if status == 'on' %}
                         <span class="badge badge-pill badge-primary" style="background-color: rgb({{r}}, {{g}}, {{b}})">On</span>
-                        {% endif %}
-                        {% if off %}
+                        {% elif status == 'off' %}
 						<span class="badge badge-pill badge-dark">Off</span>
-						{% endif %}
-						{% if busy %}
+						{% elif status == 'busy' %}
 						<span class="badge badge-pill badge-danger">DND</span>
-						{% endif %}
-						{% if available %}
+						{% elif status == 'available' %}
 						<span class="badge badge-pill badge-success">Available</span>
-						{% endif %}
-						{% if away %}
+						{% elif status == 'away' %}
 						<span class="badge badge-pill badge-warning">Away</span>
-                        {% endif %}
-                        {% if rainbow %}
+                        {% elif status == 'rainbow' %}
                         <span class="badge badge-pill badge-secondary rain">Rainbow</span>
                         {% endif %}
                     </h2>
