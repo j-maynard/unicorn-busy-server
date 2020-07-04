@@ -275,7 +275,7 @@ def apiDisplayHsv():
         return jsonify({"message": "Shutting Down!"})
     globalLastCalledApi = '/api/display/hsv'
     switchOff()
-    content = json.load(jsmin(request.get_data()))
+    content = json.loads(jsmin(request.get_data(as_text=True)))
     hue = content.get('hue', 0)
     saturation = content.get('saturation', 0)
     value = content.get('value', 0)
@@ -294,7 +294,7 @@ def apiDisplayRainbow():
     if globalShutdown:
         return jsonify({"message": "Shutting Down!"})
     switchOff()
-    content = json.load(jsmin(request.get_data()))
+    content = json.loads(jsmin(request.get_data(as_text=True)))
     hue = content.get('hue', 0)
     step = content.get('step', None)
     brightness = content.get('brightness', None)
@@ -313,7 +313,7 @@ def apiDisplayRgb():
         return jsonify({"message": "Shutting Down!"})
     globalLastCalledApi = '/api/display/rgb'
     switchOff()
-    content = json.load(jsmin(request.get_data()))
+    content = json.loads(jsmin(request.get_data(as_text =True)))
     r = content.get('red', '')
     g = content.get('green', '')
     b = content.get('blue', '')
@@ -333,7 +333,7 @@ def apiDisplayIcon():
         return jsonify({"message": "Shutting Down!"})
     globalLastCalledApi = '/api/display/icon'
     switchOff()
-    content = json.load(jsmin(request.get_data()))
+    content = json.loads(jsmin(request.get_data(as_text=True)))
     icon = content.get('icon', None)
     red = content.get('red', '')
     green = content.get('green', '')
@@ -359,7 +359,7 @@ def apiDisplayJson():
         return jsonify({"message": "Shutting Down!"})
     globalLastCalledApi = '/api/display/json'
     switchOff()
-    content = json.load(jsmin(request.get_data()))
+    content = json.loads(jsmin(request.get_data(as_text=True)))
     jsonObj = jsmin(content.get('json', ''))
     valid, message = validateJson(jsonObj) 
     if not valid:
