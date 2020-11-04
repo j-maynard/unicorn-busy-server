@@ -34,8 +34,10 @@ installSystemdService() {
     sed -i "s+WorkingDirectory=/home/pi/unicorn-busy-server+WorkingDirectory=$INSTALL_DIR+g" $INSTALL_DIR/busylight.service
     if [[ ! -f /etc/systemd/system/busylight.service ]]; then
         sudo cp busylight.service /etc/systemd/system/busylight.service
+        sudo cp discordbot.service /etc/systemd/system/discordbot.service
     else
         sudo sed -i "s+WorkingDirectory=/home/pi/unicorn-busy-server+WorkingDirectory=$INSTALL_DIR+g" /etc/systemd/system/busylight.service
+        sudo sed -i "s+WorkingDirectory=/home/pi/unicorn-busy-server+WorkingDirectory=$INSTALL_DIR+g" /etc/systemd/system/discordbot.service
     fi
 }
 
@@ -43,6 +45,8 @@ enableSystemdService() {
     show_msg "${GREEN}Starting Systemd Service...${NORMAL}"
     sudo systemctl enable busylight.service
     sudo systemctl start busylight.service
+    sudo systemctl enable discordbot.service
+    sudo systemctl start discordbot.service
 }
 
 VERBOSE=false

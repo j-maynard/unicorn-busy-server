@@ -182,8 +182,10 @@ def switchOff() :
     globalRed = 0
     globalGreen = 0
     globalBlue = 0
-    if blinkThread != None :
+    if blinkThread != None:
         blinkThread.do_run = False
+    if blinkThread.is_alive():
+        blinkThread.join()
     unicorn.clear()
     unicorn.off()
 
@@ -493,6 +495,7 @@ def startupRainbow():
         blinkThread = threading.Thread(target=displayRainbow, args=(10, 1, 0.1, 1))
         blinkThread.do_run = True
         blinkThread.start()
+        blinkThread.join()
 
 if __name__ == '__main__':
         app.run(host='0.0.0.0', debug=False)

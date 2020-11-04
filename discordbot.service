@@ -1,0 +1,12 @@
+[Unit]
+Description=BusyLightDiscordBot
+After=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/unicorn-busy-server
+ExecStart=python3 discordbot.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

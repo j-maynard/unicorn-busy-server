@@ -3,3 +3,5 @@ unicornhatmini
 flask
 gpiozero
 jsmin
+discord
+python-dotenv
