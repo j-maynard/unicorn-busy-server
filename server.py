@@ -25,6 +25,7 @@ globalIcon = 'none'
 globalShutdown= None
 globalLastCalled = None
 globalLastCalledApi = None
+globalStatus = 'off'
 
 #get the width and height of the hardware and set it to portrait if its not
 width, height = unicorn.getShape()
@@ -182,7 +183,7 @@ def switchOff() :
     globalRed = 0
     globalGreen = 0
     globalBlue = 0
-    if blinkThread != None:
+    if blinkThread != None :
         blinkThread.do_run = False
     if blinkThread.is_alive():
         blinkThread.join()
@@ -391,107 +392,116 @@ def apiStatus():
 #Non Api routes for the frontend
 @app.route('/', methods=['GET'])
 def root():
-    global globalShutdown
-    return render_template("index.html", shutdown=globalShutdown)
+    global globalShutdown, globalLastCalledApi, globalBlue, globalGreen, globalRed, globalStatus
+    return render_template("index.html", status=globalStatus, r=globalRed, g=globalGreen, b=globalBlue, shutdown=globalShutdown)
 
 @app.route('/off', methods=['GET'])
 def offCall():
-    global globalShutdown, globalLastCalledApi
+    global globalShutdown, globalLastCalledApi, globalStatus
     if globalShutdown:
-        return render_template("index.html", shutdown=globalShutdown)
+        return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
     globalLastCalledApi='Frontend: Off'
+    globalStatus='off'
     switchOff()
-    return render_template("index.html", off="off", shutdown=globalShutdown)
+    return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
 
 @app.route('/on', methods=['GET'])
 def onCall():
-    global globalShutdown, globalLastCalledApi, globalBlue, globalGreen, globalRed
+    global globalShutdown, globalLastCalledApi, globalBlue, globalGreen, globalRed, globalStatus
     if globalShutdown:
-        return render_template("index.html", shutdown=globalShutdown)
+        return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
     globalLastCalledApi='Frontend: On'
+    globalStatus='on'
     switchOff()
     switchOn()
-    return render_template("index.html", on="on", r=globalRed, g=globalGreen, b=globalBlue, shutdown=globalShutdown)
+    return render_template("index.html", status=globalStatus, r=globalRed, g=globalGreen, b=globalBlue, shutdown=globalShutdown)
 
 @app.route('/busy', methods=['POST'])
 def busyCall():
-    global globalShutdown, globalLastCalledApi, blinkThread
+    global globalShutdown, globalLastCalledApi, blinkThread, globalStatus
     if globalShutdown:
-        return render_template("index.html", shutdown=globalShutdown)
+        return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
     globalLastCalledApi='Frontend: Busy'
+    globalStatus='busy'
     switchOff()
     jsonObj = getIcon("dnd")
     blinkThread = threading.Thread(target=setDisplay, args=(255, 0, 0, 0.7, 1, jsonObj))
     blinkThread.do_run = True
     blinkThread.start()
     setTimestamp()
-    return render_template("index.html", busy="busy", shutdown=globalShutdown)
+    return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
 
 @app.route('/available', methods=['POST'])
 def availableCall():
-    global globalShutdown, globalLastCalledApi, blinkThread
+    global globalShutdown, globalLastCalledApi, blinkThread, globalStatus
     if globalShutdown:
-        return render_template("index.html", shutdown=globalShutdown)
-    globalLastCalledApi='Frontend: Busy'
+        return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
+    globalLastCalledApi='Frontend: Available'
+    globalStatus="available"
     switchOff()
     blinkThread = threading.Thread(target=setDisplay, args=(0, 255, 0, 0.5))
     blinkThread.do_run = True
     blinkThread.start()
     setTimestamp()
-    return render_template("index.html", available="available", shutdown=globalShutdown)
+    return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
 
 @app.route('/away', methods=['POST'])
 def awayCall():
-    global globalShutdown, globalLastCalledApi, blinkThread
+    global globalShutdown, globalLastCalledApi, blinkThread, globalStatus
     if globalShutdown:
-        return render_template("index.html", shutdown=globalShutdown)
+        return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
     globalLastCalledApi='Frontend: Away'
+    globalStatus='away'
     switchOff()
     blinkThread = threading.Thread(target=setDisplay, args=(255, 255, 0, 0.5))
     blinkThread.do_run = True
     blinkThread.start()
     setTimestamp()
-    return render_template("index.html", away="away", shutdown=globalShutdown)
+    return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
 
 @app.route('/rainbow', methods=['POST'])
 def rainbowCall():
-    global blinkThread, globalLastCalledApi
+    global blinkThread, globalLastCalledApi, globalStatus
     if globalShutdown:
-        return render_template("index.html", shutdown=globalShutdown)
+        return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
     globalLastCalledApi='Frontend: Rainbow'
+    globalStatus='rainbow'
     switchOff()
     blinkThread = threading.Thread(target=displayRainbow, args=(1, 0.5, 0.2, None, 0))
     blinkThread.do_run = True
     blinkThread.start()
     setTimestamp()
-    return render_template("index.html", rainbow="rainbow", shutdown=globalShutdown)
+    return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
 
 @app.route('/shutdown', methods=['POST'])
 def shutdownCall():
-    global globalShutdown, globalLastCalledApi, globalBlue, globalGreen, globalRed
+    global globalShutdown, globalLastCalledApi, globalBlue, globalGreen, globalRed, globalStatus
     if globalShutdown:
-        return render_template("index.html", shutdown=globalShutdown)
+        return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
     globalLastCalledApi='Frontend: Shutdown'
+    globalStatus='shutdown'
     switchOff()
     shutdownPi()
     setTimestamp()
-    return render_template("index.html", shutdown=globalShutdown)
+    return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
 
 @app.route('/cancel-shutdown', methods=['POST'])
 def cancelShutdownCall():
-    global globalShutdown, globalLastCalledApi, globalBlue, globalGreen, globalRed
+    global globalShutdown, globalLastCalledApi, globalBlue, globalGreen, globalRed, globalStatus
     globalLastCalledApi='Frontend: Cancel Shutdown'
+    globalStatus='off'
     switchOff()
     cancelShutdown()
     setTimestamp()
-    return render_template("index.html", off="off", shutdown=globalShutdown)
+    return render_template("index.html", shutdown=globalShutdown, status=globalStatus)
 
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 def startupRainbow():
-        global blinkThread
+        global blinkThread, globalStatus
+        globalStatus = 'off'
         blinkThread = threading.Thread(target=displayRainbow, args=(10, 1, 0.1, 1))
         blinkThread.do_run = True
         blinkThread.start()
